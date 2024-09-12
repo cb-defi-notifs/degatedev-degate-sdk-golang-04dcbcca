@@ -351,7 +351,7 @@ func (c *Client) Transfer(param *model.TransferParam) (response *binance.Transfe
 		gasFeeSymbol string
 		gasFee       *binance.GasFee
 		gasFees      []*binance.GasFee
-		tokenData    *model.ShowTokenData
+		tokenData    *binance.ShowTokenData
 		quantity     decimal.Decimal
 		volume       string
 		feeTokenId   uint32
@@ -532,7 +532,7 @@ func (c *Client) Withdraw(param *model.WithdrawParam) (response *binance.Withdra
 		gasFeeSymbol string
 		gasFee       *binance.GasFee
 		gasFees      []*binance.GasFee
-		tokenData    *model.ShowTokenData
+		tokenData    *binance.ShowTokenData
 		quantity     decimal.Decimal
 		volume       string
 		feeTokenId   uint32
@@ -595,7 +595,8 @@ func (c *Client) Withdraw(param *model.WithdrawParam) (response *binance.Withdra
 	}
 	volume = quantity.String()
 
-	gasResponse, err := c.GetGasFee()
+	//获取 gas fee
+	gasResponse, err := c.GetEstimatedWithdrawalGasFee(param.Address, tokenData.TokenID)
 	if err != nil {
 		return
 	}
@@ -604,7 +605,7 @@ func (c *Client) Withdraw(param *model.WithdrawParam) (response *binance.Withdra
 		return
 	}
 
-	gasFees = gasResponse.Data.WithdrawalGasFees
+	gasFees = gasResponse.Data.EstimatedWithdrawalGasFees
 
 	if len(gasFees) == 0 {
 		err = fmt.Errorf("not find gas fee token")
@@ -695,9 +696,9 @@ func (c *Client) Withdraw(param *model.WithdrawParam) (response *binance.Withdra
 	if err = model.Copy(response, &res.Response); err != nil {
 		return
 	}
-	if res.Data != nil {
+	if res.Success() {
 		response.Data = &binance.WithdrawData{
-			Id: res.Data.OrderID,
+			Id: r.WithdrawID,
 		}
 	}
 	return

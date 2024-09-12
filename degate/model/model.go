@@ -18,35 +18,37 @@ type TokenInfo struct {
 }
 
 type Ticker struct {
-	BaseTokenID        uint64 `json:"base_token_id"`
-	QuoteTokenID       uint64 `json:"quote_token_id"`
-	PriceChange        string `json:"price_change"`
-	PriceChangePercent string `json:"price_change_percent"`
-	WeightedAvgPrice   string `json:"weighted_avg_price"`
-	PrevClosePrice     string `json:"prev_close_price"`
-	LastPrice          string `json:"last_price"`
-	LastQty            string `json:"last_qty"`
-	BidPrice           string `json:"bid_price"`
-	BidQty             string `json:"bid_qty"`
-	AskPrice           string `json:"ask_price"`
-	AskQty             string `json:"ask_qty"`
-	OpenPrice          string `json:"open_price"`
-	HighPrice          string `json:"high_price"`
-	LowPrice           string `json:"low_price"`
-	Volume             string `json:"volume"`
-	QuoteVolume        string `json:"quote_volume"`
-	OpenTime           int64  `json:"open_time"`
-	CloseTime          int64  `json:"close_time"`
-	FirstId            string `json:"first_id"`
-	LastId             string `json:"last_id"`
-	Count              uint64 `json:"count"`
-	WeekHighPrice      string `json:"week_high_price"`
-	WeekLowPrice       string `json:"week_low_price"`
-	BaseTokenPrice     string `json:"base_token_price"`
-	QuoteTokenPrice    string `json:"quote_token_price"`
-	MakerFee           string `json:"maker_fee"`
-	TakerFee           string `json:"taker_fee"`
-	PairId             uint64 `json:"pair_id"`
+	BaseTokenID        uint64                 `json:"base_token_id"`
+	QuoteTokenID       uint64                 `json:"quote_token_id"`
+	PriceChange        string                 `json:"price_change"`
+	PriceChangePercent string                 `json:"price_change_percent"`
+	WeightedAvgPrice   string                 `json:"weighted_avg_price"`
+	PrevClosePrice     string                 `json:"prev_close_price"`
+	LastPrice          string                 `json:"last_price"`
+	LastQty            string                 `json:"last_qty"`
+	BidPrice           string                 `json:"bid_price"`
+	BidQty             string                 `json:"bid_qty"`
+	AskPrice           string                 `json:"ask_price"`
+	AskQty             string                 `json:"ask_qty"`
+	OpenPrice          string                 `json:"open_price"`
+	HighPrice          string                 `json:"high_price"`
+	LowPrice           string                 `json:"low_price"`
+	Volume             string                 `json:"volume"`
+	QuoteVolume        string                 `json:"quote_volume"`
+	OpenTime           int64                  `json:"open_time"`
+	CloseTime          int64                  `json:"close_time"`
+	FirstId            string                 `json:"first_id"`
+	LastId             string                 `json:"last_id"`
+	Count              uint64                 `json:"count"`
+	WeekHighPrice      string                 `json:"week_high_price"`
+	WeekLowPrice       string                 `json:"week_low_price"`
+	BaseTokenPrice     string                 `json:"base_token_price"`
+	QuoteTokenPrice    string                 `json:"quote_token_price"`
+	MakerFee           string                 `json:"maker_fee"`
+	TakerFee           string                 `json:"taker_fee"`
+	PairId             uint64                 `json:"pair_id"`
+	BaseToken          *binance.ShowTokenData `json:"base_token"`
+	QuoteToken         *binance.ShowTokenData `json:"quote_token"`
 }
 
 func (t *Ticker) ToBookTicker() (bookTicker *BookTicker) {
@@ -71,16 +73,16 @@ type BookTicker struct {
 }
 
 type ExchangeInfo struct {
-	ChainID              int64                      `json:"chain_id"`
-	ExchangeAddress      string                     `json:"exchange_address"`
-	DepositAddress       string                     `json:"deposit_address"`
-	WithdrawalsAddress   string                     `json:"withdrawals_address"`
-	SpotTradeAddress     string                     `json:"spot_trade_address"`
-	OrderCancelAddress   string                     `json:"order_cancel_address"`
-	OrderEffectiveDigits int                        `json:"order_effective_digits"`
-	MinOrderPrice        float64                    `json:"min_order_price"`
-	Timezone             string                     `json:"timezone"`
-	ServerTime           int64                      `json:"server_time"`
-	OrderMaxVolume       string                     `json:"order_max_volume"`
-	RateLimits           []*binance.RateLimitFilter `json:"rate_limits"`
+	ChainID               int64                      `json:"chain_id"`
+	ExchangeAddress       string                     `json:"exchange_address"`
+	DepositAddress        string                     `json:"deposit_address"`
+	WithdrawalsAddress    string                     `json:"withdrawals_address"`
+	SpotTradeAddress      string                     `json:"spot_trade_address"`
+	OrderCancelAddress    string                     `json:"order_cancel_address"`
+	OrderEffectiveDigits  int                        `json:"order_effective_digits"`
+	Timezone              string                     `json:"timezone"`
+	ServerTime            int64                      `json:"server_time"`
+	OrderMaxVolume        string                     `json:"order_max_volume"`
+	RateLimits            []*binance.RateLimitFilter `json:"rate_limits"`
+	MinLimitOrderUSDValue float64                    `json:"min_limit_order_usd_value"`
 }

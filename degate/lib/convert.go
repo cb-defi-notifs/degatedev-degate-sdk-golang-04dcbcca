@@ -174,6 +174,12 @@ func ConvertDeposit(w *model.DepositData) (deposit *binance.DepositHistory, err 
 		deposit.Status = 6
 	} else if strings.EqualFold(w.Status, "COMPLETED") {
 		deposit.Status = 1
+	} else if strings.EqualFold(w.Status, "SUCCESS") {
+		deposit.Status = 2
+	} else if strings.EqualFold(w.Status, "FAILED") {
+		deposit.Status = 3
+	} else if strings.EqualFold(w.Status, "CANCELED") {
+		deposit.Status = 4
 	}
 	if w.Token != nil {
 		deposit.Coin = w.Token.Symbol
@@ -380,6 +386,8 @@ func ConvertTicker(t *model.Ticker) (ticker *binance.Ticker) {
 	ticker.MakerFee = t.MakerFee
 	ticker.TakerFee = t.TakerFee
 	ticker.PairId = t.PairId
+	ticker.BaseToken = t.BaseToken
+	ticker.QuoteToken = t.QuoteToken
 	return
 }
 
@@ -398,11 +406,11 @@ func ConvertExchangeInfo(t *model.ExchangeInfo) (time *binance.ExchangeInfo) {
 		return
 	}
 	time = &binance.ExchangeInfo{
-		ChainID:       t.ChainID,
-		MinOrderPrice: t.MinOrderPrice,
-		Timezone:      t.Timezone,
-		ServerTime:    t.ServerTime,
-		RateLimits:    t.RateLimits,
+		ChainID:               t.ChainID,
+		MinLimitOrderUSDValue: t.MinLimitOrderUSDValue,
+		Timezone:              t.Timezone,
+		ServerTime:            t.ServerTime,
+		RateLimits:            t.RateLimits,
 	}
 	return
 }
@@ -424,7 +432,7 @@ func ConvertOrderUpdate(symbol string, orderType string, side string, quoteToken
 		buyFillVolume  = decimal.NewFromInt(0)
 		tokens         = map[uint32]*model.TokenInfo{
 			uint32(quoteToken.Id): quoteToken,
-			uint32(baseToken.Id):  quoteToken,
+			uint32(baseToken.Id):  baseToken,
 			uint32(feeToken.Id):   quoteToken,
 		}
 	)
@@ -876,6 +884,8 @@ func ConvertGasFees(fees *model.GasFees, tokens []*model.TokenInfo) (offChainFee
 
 	offChainFee.WithdrawalGasFees, err = ConvertGasFee(fees.WithdrawalGasFees, tokens)
 
+	offChainFee.EstimatedWithdrawalGasFees, err = ConvertGasFee(fees.EstimatedWithdrawalGasFees, tokens)
+
 	offChainFee.TransferGasFees, err = ConvertGasFee(fees.TransferGasFees, tokens)
 
 	offChainFee.TransferNoIDGasFees, err = ConvertGasFee(fees.TransferNoIDGasFees, tokens)
@@ -947,8 +957,8 @@ func ConvertTradeFee(fees []*model.TradeFee) (tradeFees []*binance.TradeFee) {
 	return
 }
 
-func ConvertTokenInfoToTokenData(info *model.TokenInfo) *model.ShowTokenData {
-	data := &model.ShowTokenData{
+func ConvertTokenInfoToTokenData(info *model.TokenInfo) *binance.ShowTokenData {
+	data := &binance.ShowTokenData{
 		TokenID:         uint64(info.Id),
 		Chain:           info.Chain,
 		Code:            info.Code,

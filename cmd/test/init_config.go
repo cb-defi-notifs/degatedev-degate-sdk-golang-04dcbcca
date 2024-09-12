@@ -9,6 +9,7 @@ var appConfig = &conf.AppConfig{
 	AccountId:       0,
 	AccountAddress:  "",
 	AssetPrivateKey: "",
+	BaseUrl:         "",
 }
 
 func init() {
